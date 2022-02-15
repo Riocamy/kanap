@@ -10,7 +10,7 @@ fetch("http://localhost:3000/api/products/")
     //Intégration des produits dans la page d'accueil
     for(let product of jsonListProduct) {
       let i = 0; i < product.length; i++;
-      document.getElementById("items").innerHTML += `<a href="${product._id}">
+      document.getElementById("items").innerHTML += `<a href="./product.html?id=${product._id}">
                                                       <article>
                                                         <img src="${product.imageUrl}" alt="${product.altTxt}">
                                                         <h3 class="productName">${product.name}</h3>
