@@ -67,10 +67,38 @@ fetch(url)
       colors.appendChild(option);
       console.log(productColor);
     })
+
+    /*
+    //Contenu de la page produit
+    Récupérer l'ID du produit
+    Interroger l'API pour accéder aux données
+    Modifier le DOM avec les datas du produit
+    */
+  
+    //Ajout du produit dans le panier
+    let button = document.getElementById("addToCart"); //Définir le bouton
+
+    button.addEventListener("click", function(cart) { //La fonction permettant d'ajouter le produit sélectionné au panier
+      let name = document.getElementById("title").textContent;
+      let quantity = document.getElementById("quantity").value;
+      let color = document.getElementById("colors").value;
+
+      if (quantity <= 0) { //Conditions d'ajout au panier
+        alert("Veuillez saisir le nombre de canapés.");
+      } else if (color == "") {
+        alert("Veuillez choisir une couleur.");
+      } else {
+        localStorage.setItem(productId, name, quantity, color);
+        //window.location.assign("cart.html"); //Redirection vers la page Panier
+        console.log(localStorage);
+      }
+    })
   })
 
 /*
-Récupérer l'ID du produit
-Interroger l'API pour accéder aux données
-Modifier le DOM avec les datas du produit
+// Ajouter les produits au panier
+Intégrer le bouton
+Définir les valeurs à récupérer dans le panier : id, quantité et couleur sélectionnée
+Cliquer sur le bouton pour ajouter au panier
+Produit ajouté au panier avec les bonnes informations
 */
