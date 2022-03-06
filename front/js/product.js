@@ -56,7 +56,7 @@ fetch(url)
 
     //Intégration de la description
     let productDescription = document.getElementById("description");
-    productDescription.innerHTML += `<p id="description">${product.description}/p>`;
+    productDescription.innerHTML += `<p id="description">${product.description}</p>`;
     console.log(productDescription);
 
     //Intégration de la couleur
@@ -79,21 +79,62 @@ fetch(url)
     let button = document.getElementById("addToCart"); //Définir le bouton
 
     button.addEventListener("click", function(cart) { //La fonction permettant d'ajouter le produit sélectionné au panier
-      let name = document.getElementById("title").textContent;
-      let quantity = document.getElementById("quantity").value;
-      let color = document.getElementById("colors").value;
+      let selectedId = productId;
+      let selectedName = document.getElementById("title").textContent;
+      let selectedQuantity = document.getElementById("quantity").value;
+      let selectedColor = document.getElementById("colors").value;
+      const selectedProduct = {
+        "id": selectedId,
+        "name": selectedName,
+        "quantity": selectedQuantity,
+        "color": selectedColor,
+      };
+      console.log(cart);
 
-      if (quantity <= 0) { //Conditions d'ajout au panier
+      //Conditions d'ajout au panier
+      if (selectedQuantity == 0) {
         alert("Veuillez saisir le nombre de canapés.");
-      } else if (color == "") {
+      } else if (selectedColor == "") {
         alert("Veuillez choisir une couleur.");
       } else {
-        localStorage.setItem(productId, name, quantity, color);
+        //Ajoute le produit au localStorage
+        localStorage.setItem("allCouches", JSON.stringify(selectedProduct));
         //window.location.assign("cart.html"); //Redirection vers la page Panier
-        console.log(localStorage);
-      }
+        function addToCart() {
+          // Ajouter un autre produit au localStorage
+          let existingCart = JSON.parse(localStorage.getItem("allCouches"));
+          let entryId = productId;
+          let entryName = document.getElementById("title").textContent;
+          let entryQuantity = document.getElementById("quantity").value;
+          let entryColor = document.getElementById("colors").value;
+          const entryProduct = {
+            "id": entryId,
+            "name": entryName,
+            "quantity": entryQuantity,
+            "color": entryColor,
+          };
+          if (existingCart.entryId == entryProduct.id) {
+            addToCart.then(() => {
+              if (existingCart.entryColor == entryProduct.color) {
+                addToCart.then(() => { // Si la couleur est identique, incrémente seulement la quantité
+                  existingCart.entryQuantity += entryProduct.quantity;
+                  localStorage.setItem("entryCouches", JSON.stringify(entryProduct));
+                  })
+              } else {
+              // Si la couleur est différente, ajoute le produit au localStorage
+              existingCart.push(entryProduct);
+              localStorage.setItem("allCouches", JSON.stringify(existingCart))
+              }
+            })
+            } else {
+              //Si l'ID est différent, ajoute le produit au localStorage
+              existingCart.push(entryProduct);
+              localStorage.setItem("allCouches", JSON.stringify(existingCart));
+            }
+          }
+        }
+      })
     })
-  })
 
 /*
 // Ajouter les produits au panier
@@ -101,4 +142,5 @@ Intégrer le bouton
 Définir les valeurs à récupérer dans le panier : id, quantité et couleur sélectionnée
 Cliquer sur le bouton pour ajouter au panier
 Produit ajouté au panier avec les bonnes informations
+Deux cas de figure à intégrer : Si le produit est déja dans le panier, s'il n'est pas dans le panier
 */
