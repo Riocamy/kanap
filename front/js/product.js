@@ -78,7 +78,7 @@ fetch(url)
     //Ajout du produit dans le panier
     let button = document.getElementById("addToCart"); //Définir le bouton
 
-    button.addEventListener("click", function(cart) { //La fonction permettant d'ajouter le produit sélectionné au panier
+    button.addEventListener("click", function productInCart() { //La fonction permettant d'ajouter le produit sélectionné au panier
       let selectedId = productId;
       let selectedName = document.getElementById("title").textContent;
       let selectedQuantity = document.getElementById("quantity").value;
@@ -89,7 +89,7 @@ fetch(url)
         "quantity": selectedQuantity,
         "color": selectedColor,
       };
-      console.log(cart);
+      console.log(selectedProduct);
 
       //Conditions d'ajout au panier
       if (selectedQuantity == 0) {
@@ -100,8 +100,7 @@ fetch(url)
         //Ajoute le produit au localStorage
         localStorage.setItem("allCouches", JSON.stringify(selectedProduct));
         //window.location.assign("cart.html"); //Redirection vers la page Panier
-        function addToCart() {
-          // Ajouter un autre produit au localStorage
+        function otherProductInCart() { // Ajouter un autre produit au localStorage
           let existingCart = JSON.parse(localStorage.getItem("allCouches"));
           let entryId = productId;
           let entryName = document.getElementById("title").textContent;
@@ -114,7 +113,7 @@ fetch(url)
             "color": entryColor,
           };
           if (existingCart.entryId == entryProduct.id) {
-            addToCart.then(() => {
+            cart.then(() => {
               if (existingCart.entryColor == entryProduct.color) {
                 addToCart.then(() => { // Si la couleur est identique, incrémente seulement la quantité
                   existingCart.entryQuantity += entryProduct.quantity;
@@ -130,6 +129,7 @@ fetch(url)
               //Si l'ID est différent, ajoute le produit au localStorage
               existingCart.push(entryProduct);
               localStorage.setItem("allCouches", JSON.stringify(existingCart));
+              otherProductInCart();
             }
           }
         }
