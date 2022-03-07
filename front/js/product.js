@@ -101,7 +101,7 @@ fetch(url)
         localStorage.setItem("allCouches", JSON.stringify(selectedProduct));
         //window.location.assign("cart.html"); //Redirection vers la page Panier
         function otherProductInCart() { // Ajouter un autre produit au localStorage
-          let existingCart = JSON.parse(localStorage.getItem("allCouches"));
+          let existingCart = JSON.parse(localStorage.getItem("allCouches")); //Pour vérifier si le produit est déjà dans le panier
           let entryId = productId;
           let entryName = document.getElementById("title").textContent;
           let entryQuantity = document.getElementById("quantity").value;
