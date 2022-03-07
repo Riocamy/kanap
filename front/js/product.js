@@ -113,7 +113,7 @@ fetch(url)
             "color": entryColor,
           };
           if (existingCart.entryId == entryProduct.id) {
-            cart.then(() => {
+            otherProductInCart.then(() => {
               if (existingCart.entryColor == entryProduct.color) {
                 addToCart.then(() => { // Si la couleur est identique, incrémente seulement la quantité
                   existingCart.entryQuantity += entryProduct.quantity;
