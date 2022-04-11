@@ -28,7 +28,6 @@ const button = document.querySelector("#addToCart");
 
 // Fonction qui récupère les données de la promesse .then(product) pour injecter les valeurs dans le fichier Html
 let selectedProduct = (product) => {
-
   // Intégration des données du produit sélectionné dans la page HTML
   document.querySelector("head > title").textContent = product.name;
   document.querySelector(".item__img")
@@ -48,7 +47,6 @@ let selectedProduct = (product) => {
 
 // Fonction qui enregistre dans un objet les options de l'utilisateur au click sur le bouton ajouter au panier
 let registredProduct = (product) => {
-
   // Écoute de l'évènement click sur le bouton ajouter
   button.addEventListener("click", (event) => {
     event.preventDefault();
@@ -74,7 +72,7 @@ let registredProduct = (product) => {
       };
       console.log(selectedProduct);
 
-      /* Gestion du Local Storage */
+      /**** Gestion du Local Storage ****/
 
       //Récupération des données du Local Storage
       let existingCart = JSON.parse(localStorage.getItem("cart"));
@@ -101,7 +99,7 @@ let registredProduct = (product) => {
         console.log("Le produit a été ajouté au panier");
 
       } else {
-        //  Sinon création d'un tableau dans le lequel on push l'objet "selectedProduct"
+        // Sinon création d'un tableau dans le lequel on push l'objet "selectedProduct"
         let createLocalStorage = [];
         createLocalStorage.push(selectedProduct);
         localStorage.setItem("cart", JSON.stringify(createLocalStorage));

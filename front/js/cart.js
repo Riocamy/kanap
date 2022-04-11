@@ -7,7 +7,7 @@ let products = [];
 // Variable qui récupère l'orderId envoyé comme réponse par le serveur lors de la requête POST
 let orderId = "";
 
-// Condition de vérification si le panier existe et ou est vide et modification texte
+// Condition de vérification si le panier existe ou s'il est vide
 if (cart === null || cart.length === 0) {
   alert("Le panier est vide !");
 } else {
@@ -19,27 +19,27 @@ for (product of cart) {
   document.querySelector(
     "#cart__items"
   ).innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
-        <div class="cart__item__img">
-            <img src="${product.img}" alt="${product.altTxt}">
-        </div>
-        <div class="cart__item__content">
-            <div class="cart__item__content__description">
-                <h2>${product.name}</h2>
-                <p>Couleur du produit: ${product.color}</p>
-                <p>Prix unitaire: ${product.price}€</p>
-            </div>
-        <div class="cart__item__content__settings">
-            <div id="jojo" class="cart__item__content__settings__quantity">
-                <p id="quantité">Qté : ${product.quantity} </p>
-                <p id="sousTotal">Prix total pour cet article: ${product.totalPrice}€</p> 
-                <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-            </div>
-            <div class="cart__item__content__settings__delete">
-                <p class="deleteItem"><button>Supprimer</button></p>
-            </div>
-        </div>
-        </div>
-    </article>`;
+                    <div class="cart__item__img">
+                        <img src="${product.img}" alt="${product.altTxt}">
+                    </div>
+                    <div class="cart__item__content">
+                        <div class="cart__item__content__description">
+                            <h2>${product.name}</h2>
+                            <p>Couleur du produit: ${product.color}</p>
+                            <p>Prix unitaire: ${product.price}€</p>
+                        </div>
+                    <div class="cart__item__content__settings">
+                        <div id="jojo" class="cart__item__content__settings__quantity">
+                            <p id="quantité">Qté : ${product.quantity} </p>
+                            <p id="sousTotal">Prix total pour cet article: ${product.totalPrice}€</p> 
+                            <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
+                        </div>
+                        <div class="cart__item__content__settings__delete">
+                            <p class="deleteItem"><button>Supprimer</button></p>
+                        </div>
+                    </div>
+                    </div>
+                </article>`;
 
   // Récupération des Id de chaque articles et envoi dans le tableau de la variable products[]
   products.push(product.id);
@@ -70,7 +70,7 @@ let addQuantFunction = () => {
   return quant;
 };
 
-// Fonction mise à jour du local storage products
+// Fonction mise à jour du local storage
 let majLocalStorageProducts = () => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
@@ -94,11 +94,15 @@ function injectSommeQuant() {
 }
 injectSommeQuant();
 
+/* MODULE DE MODIFICATION DES QUANTITES ET MODIFICATION AUTO DU PRIX TOTAL */
+
 console.log(cart);
+//Récupération des informations de quantité et de 
 let itemQuantity = Array.from(document.querySelectorAll(".itemQuantity"));
 let sousTotal = Array.from(document.querySelectorAll("#sousTotal"));
 let screenQuantity = Array.from(document.querySelectorAll("#quantité"));
 
+//Boucle permettant d'effectuer les modifications
 itemQuantity.forEach(function (quantity, i) {
   quantity.addEventListener("change", (event) => {
     event.preventDefault();
@@ -117,7 +121,6 @@ itemQuantity.forEach(function (quantity, i) {
     injectSommeQuant();
   });
 });
-
 
 
 /* SUPPRESSION DES ARTICLES */
@@ -158,11 +161,9 @@ deleteProduct();
 /* LE FORMULAIRE */
 
 // sélection du bouton Valider
-
 const btnValidate = document.querySelector("#order");
 
 // Écoute du bouton Valider sur le click pour pouvoir contrôler, valider et ennoyer le formulaire et les produits au back-end
-
 btnValidate.addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -314,7 +315,7 @@ btnValidate.addEventListener("click", (event) => {
         "Content-Type": "application/json",
       },
     })
-      // Ensuite on stock la réponse de l'api (orderId)
+      // Récupération et stockage de la réponse de l'API (orderId)
       .then((response) => {
         return response.json();
       })

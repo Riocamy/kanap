@@ -11,8 +11,7 @@ const idConfirmation = document.querySelector("#orderId");
 
 const btnRetourHtml = `<button id="retourAccueil"><a href="./index.html">Retour à l'accueil</a></button>`;
 
-//Fonction Auto-invoquer pour afficher l'orderId dans le DOM
-
+//Affichage de l'orderId dans le DOM
 (function () {
   idConfirmation.innerHTML = `
   <p>Commande validée ! <br>Votre numéro de commande est : 
