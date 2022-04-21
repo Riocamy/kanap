@@ -1,162 +1,145 @@
-// Variable qui récupère les articles du panier dans le local storage
+// Récupération du localStorage
 let cart = JSON.parse(localStorage.getItem("cart"));
 
-// Variable pour stocker les id de chaque articles présent dans le panier
+// Variable pour stocker les id de chaque articles présent dans le panier (utilisés pour créer la commande)
 let products = [];
 
 // Variable qui récupère l'orderId envoyé comme réponse par le serveur lors de la requête POST
 let orderId = "";
 
-// Condition de vérification si le panier existe ou s'il est vide
-if (cart === null || cart.length === 0) {
-  alert("Le panier est vide !");
-} else {
-  console.log("Des produits sont présents dans le panier");
-}
+// Affichage du contenu du panier
+async function displayCart() {
+  const parser = new DOMParser();
+  const positionEmptyCart = document.getElementById("cart__items");
+  let cartArray = [];
 
-//Boucle intégrant les informations du produit dans la page panier
-for (product of cart) {
-  document.querySelector(
-    "#cart__items"
-  ).innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
-                    <div class="cart__item__img">
-                        <img src="${product.img}" alt="${product.altTxt}">
+  // Si le localstorage est vide
+  if (cart === null || cart === 0) {
+    positionEmptyCart.textContent = "Votre panier est vide";
+  } else {
+    console.log("Des produits sont présents dans le panier");
+  }
+  
+  // Si le localstorage contient des produits
+  for (i = 0; i < cart.length; i++) {
+    const product = await getProductById(cart[i].id);
+    const totalPriceItem = (product.price *= cart[i].quantity);
+    cartArray += `<article class="cart__item" data-id="${cart[i].id}" data-color="${cart[i].color}">
+                <div class="cart__item__img">
+                    <img src="${product.imageUrl}" alt="${product.altTxt}">
+                </div>
+                <div class="cart__item__content">
+                    <div class="cart__item__content__description">
+                        <h2>${product.name}</h2>
+                        <p>${cart[i].color}</p>
+                        <p>Prix unitaire: ${product.price}€</p>
                     </div>
-                    <div class="cart__item__content">
-                        <div class="cart__item__content__description">
-                            <h2>${product.name}</h2>
-                            <p>Couleur du produit: ${product.color}</p>
-                            <p>Prix unitaire: ${product.price}€</p>
-                        </div>
                     <div class="cart__item__content__settings">
-                        <div id="jojo" class="cart__item__content__settings__quantity">
-                            <p id="quantité">Qté : ${product.quantity} </p>
-                            <p id="sousTotal">Prix total pour cet article: ${product.totalPrice}€</p> 
-                            <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
-                        </div>
-                        <div class="cart__item__content__settings__delete">
-                            <p class="deleteItem"><button>Supprimer</button></p>
-                        </div>
+                      <div class="cart__item__content__settings__quantity">
+                          <p id="quantité">
+                            Qté : <input data-id= ${cart[i].id} data-color= ${cart[i].color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${cart[i].quantity}>
+                          </p>
+                          <p id="sousTotal">Prix total pour cet article: ${totalPriceItem}€</p> 
+                      </div>
+                      <div class="cart__item__content__settings__delete">
+                        <p data-id= ${cart[i].id} data-color= ${cart[i].color} class="deleteItem">Supprimer</p>
+                      </div>
                     </div>
-                    </div>
+                  </div>
+                </div>
                 </article>`;
+  }
+  // Boucle d'affichage du nombre total d'articles et du prix total du panier
+  let totalQuantity = 0;
+  let totalPrice = 0;
 
-  // Récupération des Id de chaque articles et envoi dans le tableau de la variable products[]
-  products.push(product.id);
-  console.log(products);
-}
+  for (i = 0; i < cart.length; i++) {
+    const article = await getProductById(cart[i].id);
+    totalQuantity += parseInt(cart[i].quantity);
+    totalPrice += parseInt(article.price * cart[i].quantity);
+  }
 
-// Fonction récupération des prix des articles et somme totale
-let addPriceFunction = () => {
-  console.log(cart);
-  let found = cart.map((element) => element.totalPrice);
-  console.log(found);
+  document.getElementById("totalQuantity").innerHTML = totalQuantity;
+  document.getElementById("totalPrice").innerHTML = totalPrice;
 
-  const reducer = (previousValue, currentValue) => previousValue + currentValue;
-  let somme = found.reduce(reducer);
-  console.log(somme);
-  return somme;
-};
-
-// Fonction récupération des quantités des articles et quantité totale
-let addQuantFunction = () => {
-  console.log(cart);
-  let found2 = cart.map((element) => element.quantity);
-  console.log(found2);
-
-  const reducer = (previousValue, currentValue) => previousValue + currentValue;
-  let quant = found2.reduce(reducer);
-  console.log(quant);
-  return quant;
-};
-
-// Fonction mise à jour du local storage
-let majLocalStorageProducts = () => {
-  localStorage.setItem("cart", JSON.stringify(cart));
-};
-
-// Fonction d'injection dans le DOM des donnés addPrice et addQuant
-function injectSommeQuant() {
-  // Appel de la fonction addPriceFunction qui nous retourne la variable somme
-  let sommeTotale = addPriceFunction();
-  //Intégration de la somme totale dans le DOM
-  document.querySelector("#totalPrice").textContent = sommeTotale;
-
-  localStorage.setItem("sommeTotale", JSON.stringify(sommeTotale));
-
-  // Appel de la fonction addQuantFunction qui nous retourne la variable quant
-  let quantTotale = addQuantFunction();
-
-  //intégration de la quantité des articles dans le DOM
-  document.querySelector("#totalQuantity").textContent = quantTotale;
-
-  majLocalStorageProducts();
-}
-injectSommeQuant();
-
-/* MODULE DE MODIFICATION DES QUANTITES ET MODIFICATION AUTO DU PRIX TOTAL */
-
-console.log(cart);
-//Récupération des informations de quantité et de 
-let itemQuantity = Array.from(document.querySelectorAll(".itemQuantity"));
-let sousTotal = Array.from(document.querySelectorAll("#sousTotal"));
-let screenQuantity = Array.from(document.querySelectorAll("#quantité"));
-
-//Boucle permettant d'effectuer les modifications
-itemQuantity.forEach(function (quantity, i) {
-  quantity.addEventListener("change", (event) => {
-    event.preventDefault();
-    let newArticlePrice = quantity.value * cart[i].price;
-    console.log(quantity.value);
-
-    screenQuantity[i].textContent = "Qté: " + quantity.value;
-    cart[i].quantity = parseInt(quantity.value, 10);
-
-    sousTotal[i].textContent =
-      "Prix total pour cet article: " + newArticlePrice + " €";
-      cart[i].totalPrice = newArticlePrice;
-
-    console.log(`le prix de ${cart[i].name} et passé à ${newArticlePrice}`);
-
-    injectSommeQuant();
-  });
-});
-
-
-/* SUPPRESSION DES ARTICLES */
-
-// Récupération de la node list des boutons supprimer et transformation en tableau avec Array.from
-let supprimerSelection = Array.from(document.querySelectorAll(".deleteItem"));
-
-// Nouveau tableau pour récupérer le tableau cart existant et contrôler les suppression
-let tabControlDelete = [];
-
-// Fonction de suppression des articles
-function deleteProduct() {
-  for (let i = 0; i < supprimerSelection.length; i++) {
-    // Écoute d'évènements au click sur le tableau des boutons supprimer
-    supprimerSelection[i].addEventListener("click", () => {
-      // Suppression de l'article visuellement sur la page
-      supprimerSelection[i].parentElement.style.display = "none";
-
-      // Copie du tableau cart dans le tableau tabControlDelete
-      tabControlDelete = cart;
-
-      // Array.prototype.splice() supprime un élément à chaque index [i] du tableau écouté
-      tabControlDelete.splice([i], 1);
-
-      // Mise à jour du local storage
-      cart = localStorage.setItem("cart", JSON.stringify(tabControlDelete));
-
-      // Rafraîchissement de la page
-      window.location.href = "cart.html";
-    });
+  if (i == cart.length) {
+    const displayBasket = parser.parseFromString(cartArray, "text/html");
+    positionEmptyCart.appendChild(displayBasket.body);
+    changeQuantity();
+    deleteItem();
   }
 }
 
-deleteProduct();
+// Récupération des produits de l'API
+async function getProductById(productId) {
+  return fetch("http://localhost:3000/api/products/" + productId)
+    .then(function (res) {
+      return res.json();
+    })
+    .catch((err) => {
+      // Une erreur est survenue
+      console.log("erreur");
+    })
+    .then(function (response) {
+      return response;
+    });
+}
+displayCart();
 
+// Modification de la quantité
+function changeQuantity() {
+  const quantityInputs = document.querySelectorAll(".itemQuantity");
+  quantityInputs.forEach((quantityInput) => {
+    quantityInput.addEventListener("change", (event) => {
+      event.preventDefault();
+      const inputValue = event.target.value;
+      const dataId = event.target.getAttribute("data-id");
+      const dataColor = event.target.getAttribute("data-color");
+      let cart = localStorage.getItem("cart");
+      let items = JSON.parse(cart);
 
+      items = items.map((item, index) => {
+        if (item.id === dataId && item.color === dataColor) {
+          item.quantity = inputValue;
+        }
+        return item;
+      });
+
+      if (inputValue > 100) {
+        alert("La quantité maximale autorisée est de 100");
+        location.reload();
+        return;
+      }
+      let itemsStr = JSON.stringify(items);
+      localStorage.setItem("cart", itemsStr);
+      location.reload();
+    });
+  });
+}
+
+// Suppression d'un article
+function deleteItem() {
+  const deleteButtons = document.querySelectorAll(".deleteItem");
+  deleteButtons.forEach((deleteButton) => {
+    deleteButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      const deleteId = event.target.getAttribute("data-id");
+      const deleteColor = event.target.getAttribute("data-color");
+      cart = cart.filter(
+        (element) => !(element.id == deleteId && element.color == deleteColor)
+      );
+      console.log(cart);
+      deleteConfirm = window.confirm(
+        "Etes vous sûr de vouloir supprimer cet article ?"
+      );
+      if (deleteConfirm == true) {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        location.reload();
+        alert("Article supprimé du panier.");
+      }
+    });
+  });
+}
 
 /* LE FORMULAIRE */
 

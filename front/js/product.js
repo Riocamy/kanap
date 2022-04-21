@@ -1,4 +1,4 @@
-//Récupération de l'ID du produit
+// Récupération de l'ID du produit
 const getProductId = () => {
   return new URL(location.href).searchParams.get("id");
 };
@@ -67,14 +67,12 @@ let registredProduct = (product) => {
         description: product.description,
         color: selectedColor.value,
         quantity: parseInt(selectedQuantity.value, 10),
-        price: product.price,
-        totalPrice: product.price * parseInt(selectedQuantity.value, 10),
       };
       console.log(selectedProduct);
 
       /**** Gestion du Local Storage ****/
 
-      //Récupération des données du Local Storage
+      // Récupération des données du Local Storage
       let existingCart = JSON.parse(localStorage.getItem("cart"));
 
       // Si le Local Storage existe
