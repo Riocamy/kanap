@@ -1,7 +1,7 @@
 // Récupération du localStorage
 let cart = JSON.parse(localStorage.getItem("cart"));
 
-// Variable pour stocker les id de chaque articles présent dans le panier (utilisés pour créer la commande)
+// Variable pour stocker les Id de chaque articles présent dans le panier (utilisés pour créer la commande)
 let products = [];
 
 // Variable qui récupère l'orderId envoyé comme réponse par le serveur lors de la requête POST
@@ -25,31 +25,31 @@ async function displayCart() {
     const product = await getProductById(cart[i].id);
     const totalPriceItem = (product.price *= cart[i].quantity);
     cartArray += `<article class="cart__item" data-id="${cart[i].id}" data-color="${cart[i].color}">
-                <div class="cart__item__img">
-                    <img src="${product.imageUrl}" alt="${product.altTxt}">
-                </div>
-                <div class="cart__item__content">
-                    <div class="cart__item__content__description">
-                        <h2>${product.name}</h2>
-                        <p>${cart[i].color}</p>
-                        <p>Prix unitaire: ${product.price}€</p>
-                    </div>
-                    <div class="cart__item__content__settings">
-                      <div class="cart__item__content__settings__quantity">
-                          <p id="quantité">
-                            Qté : <input data-id= ${cart[i].id} data-color= ${cart[i].color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${cart[i].quantity}>
-                          </p>
-                          <p id="sousTotal">Prix total pour cet article: ${totalPriceItem}€</p> 
+                  <div class="cart__item__img">
+                      <img src="${product.imageUrl}" alt="${product.altTxt}">
+                  </div>
+                  <div class="cart__item__content">
+                      <div class="cart__item__content__description">
+                          <h2>${product.name}</h2>
+                          <p>${cart[i].color}</p>
+                          <p>Prix unitaire: ${product.price}€</p>
                       </div>
-                      <div class="cart__item__content__settings__delete">
-                        <p data-id= ${cart[i].id} data-color= ${cart[i].color} class="deleteItem">Supprimer</p>
+                      <div class="cart__item__content__settings">
+                        <div class="cart__item__content__settings__quantity">
+                            <p id="quantité">
+                              Qté : <input data-id= ${cart[i].id} data-color= ${cart[i].color} type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value=${cart[i].quantity}>
+                            </p>
+                            <p id="sousTotal">Prix total pour cet article: ${totalPriceItem}€</p> 
+                        </div>
+                        <div class="cart__item__content__settings__delete">
+                          <p data-id= ${cart[i].id} data-color= ${cart[i].color} class="deleteItem">Supprimer</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                </article>`;
+                  </article>`;
   }
-  // Boucle d'affichage du nombre total d'articles et du prix total du panier
+  // Boucle d'affichage du nombre total d'articles et du prix total
   let totalQuantity = 0;
   let totalPrice = 0;
 
@@ -77,7 +77,7 @@ async function getProductById(productId) {
       return res.json();
     })
     .catch((err) => {
-      // Une erreur est survenue
+      // Erreur serveur
       console.log("erreur");
     })
     .then(function (response) {
@@ -146,7 +146,7 @@ function deleteItem() {
 // sélection du bouton Valider
 const btnValidate = document.querySelector("#order");
 
-// Écoute du bouton Valider sur le click pour pouvoir contrôler, valider et ennoyer le formulaire et les produits au back-end
+// Écoute du bouton Valider sur le click pour pouvoir valider le formulaire
 btnValidate.addEventListener("click", (event) => {
   event.preventDefault();
 
@@ -306,7 +306,8 @@ btnValidate.addEventListener("click", (event) => {
         orderId = server.orderId;
         console.log(orderId);
       });
-    // Si la variable orderId n'est pas une chaîne vide on redirige notre utilisateur sur la page confirmation avec la variable
+
+    // Si l'orderId a bien été récupéré, on redirige l'utilisateur vers la page de Confirmation
     if (orderId != "") {
       location.href = "confirmation.html?id=" + orderId;
     }
