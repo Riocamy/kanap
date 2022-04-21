@@ -70,12 +70,12 @@ let registredProduct = (product) => {
       };
       console.log(selectedProduct);
 
-      /**** Gestion du Local Storage ****/
+      /**** Gestion du localStorage ****/
 
-      // Récupération des données du Local Storage
+      // Récupération des données du localStorage
       let existingCart = JSON.parse(localStorage.getItem("cart"));
 
-      // Si le Local Storage existe
+      // Si le localStorage existe
       if (existingCart) {
         console.log("Il y a déjà un produit dans le panier, on compare les données");
         // On recherche avec la méthode find() si l'id et la couleur d'un article sont déjà présents

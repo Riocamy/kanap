@@ -104,14 +104,10 @@ function changeQuantity() {
         }
         return item;
       });
-
-      if (inputValue > 100) {
-        alert("La quantité maximale autorisée est de 100");
-        location.reload();
-        return;
-      }
+      // Mise à jour du localStorage
       let itemsStr = JSON.stringify(items);
       localStorage.setItem("cart", itemsStr);
+      // Refresh de la page Panier
       location.reload();
     });
   });
@@ -129,14 +125,11 @@ function deleteItem() {
         (element) => !(element.id == deleteId && element.color == deleteColor)
       );
       console.log(cart);
-      deleteConfirm = window.confirm(
-        "Etes vous sûr de vouloir supprimer cet article ?"
-      );
-      if (deleteConfirm == true) {
-        localStorage.setItem("cart", JSON.stringify(cart));
-        location.reload();
-        alert("Article supprimé du panier.");
-      }
+      // Mise à jour du localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+      // Refresh de la page Panier
+      location.reload();
+      alert("Article supprimé du panier.");
     });
   });
 }
